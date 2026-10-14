@@ -1,0 +1,5 @@
+# Written by Claude Code beside a plugin it loads from disk
+.claude-plugin/types/
+plugins/*/.claude-plugin/types/
+.DS_Store
+*.log

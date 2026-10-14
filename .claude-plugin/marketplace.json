@@ -1,0 +1,17 @@
+{
+  "name": "agora",
+  "description": "A shared catalog of Claude Code plugins.",
+  "owner": {
+    "name": "ilionblaze"
+  },
+  "plugins": [
+    {
+      "name": "ticket-tracker",
+      "source": "./plugins/ticket-tracker",
+      "description": "Tracks the Jira and GitHub issues and PRs touched during a conversation, and what was done to each, in a toggleable pane.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": ["jira", "github", "issues", "pane"]
+    }
+  ]
+}

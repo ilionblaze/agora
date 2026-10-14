@@ -1,0 +1,8 @@
+{
+  "name": "ticket-tracker",
+  "version": "0.1.0",
+  "description": "Tracks the Jira and GitHub issues and pull requests touched during a conversation, and what was done to each, in a toggleable pane.",
+  "author": { "name": "ilionblaze" },
+  "keywords": ["jira", "github", "issues", "pane", "tracking"],
+  "types": "./types/index.d.ts"
+}
