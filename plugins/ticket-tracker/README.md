@@ -29,12 +29,14 @@ claude plugin install ticket-tracker@agora
 ## Use
 
 - **Band above the prompt**: once something has been touched, a single line shows the counts and a **Show tickets / Hide tickets** button that toggles the pane.
-- **`/tickets`**: toggles the pane.
+- **`/tickets`**: toggles the pane; `/tickets open` and `/tickets close` set it explicitly.
 - **In the pane**: press a row to expand or collapse its actions. **Changes only / All activity** switches between write actions only and views too. **Expand all / Collapse all** does what it says. Close the pane with its close mark, `ctrl+x x`, or the toggle.
 
 | Command | |
 | --- | --- |
-| `/tickets` | Toggle the pane |
+| `/tickets` | Toggle the pane: open it if it's closed, close it if it's open |
+| `/tickets open` | Open the pane (does nothing if it's already open) |
+| `/tickets close` | Close the pane (does nothing if it's already closed) |
 | `/tickets summary` | Print the changes as text in the transcript (`/tickets summary all` includes views). Claude reads it too, so you can follow up with "post that as a status update". |
 | `/tickets all` · `/tickets changes` | Show or hide read-only activity in the pane |
 | `/tickets rescan` | Rebuild the list from the conversation history |

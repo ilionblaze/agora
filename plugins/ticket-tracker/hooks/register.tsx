@@ -15,6 +15,8 @@ const isOpen = atom({ plugin: 'ticket-tracker', key: 'isOpen' } as const, false)
 
 const USAGE = [
   '/tickets           toggle the Tickets pane',
+  '/tickets open      open the pane (no change if already open)',
+  '/tickets close     close the pane (no change if already closed)',
   '/tickets summary   print what was touched (changes only); `summary all` includes views',
   '/tickets all       show views as well as changes in the pane',
   '/tickets changes   show only changes in the pane',
@@ -27,7 +29,7 @@ export const register: Register = on => {
     await $.command.register({
       name: 'tickets',
       description: 'Toggle the pane of Jira / GitHub items touched in this conversation',
-      argumentHint: '[summary|all|changes|rescan|clear]',
+      argumentHint: '[open|close|summary|all|changes|rescan|clear]',
     })
     await rescan($)
 
