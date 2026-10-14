@@ -36,39 +36,46 @@ export const register: Register = on => {
     return next(e)
   })
 
+  // Only `summary` answers with text: a command's text becomes a transcript
+  // row the model reads, so every other subcommand replies with a toast,
+  // which the person sees and the model never does.
   on('command.run', { command: 'tickets' }, async ($, e) => {
     const [arg = '', more = ''] = e.args.trim().toLowerCase().split(/\s+/)
 
     switch (arg) {
-      case '':
-      case 'toggle': {
-        const shown = await toggle($)
-        return { text: shown ? 'Tickets pane opened.' : 'Tickets pane closed.' }
-      }
-      case 'open':
-        await open($)
-        return { text: 'Tickets pane opened.' }
-      case 'close':
-        await close($)
-        return { text: 'Tickets pane closed.' }
       case 'summary':
         return { text: summarize(await read($, tickets), more === 'all') }
+      case '':
+      case 'toggle':
+        await toggle($)
+        break
+      case 'open':
+        await open($)
+        break
+      case 'close':
+        await close($)
+        break
       case 'all':
       case 'changes':
         await update($, showReads, () => arg === 'all')
-        return { text: arg === 'all' ? 'Showing views and changes.' : 'Showing changes only.' }
+        $.ui.toast(arg === 'all' ? 'Tickets: showing views and changes.' : 'Tickets: showing changes only.')
+        break
       case 'rescan': {
         await update($, tickets, () => [])
         const count = await rescan($)
-        return { text: `Rebuilt from history: ${count} item${count === 1 ? '' : 's'}.` }
+        $.ui.toast(`Tickets: rebuilt from history, ${count} item${count === 1 ? '' : 's'}.`)
+        break
       }
       case 'clear':
         await update($, tickets, () => [])
         await update($, expanded, () => [])
-        return { text: 'Cleared the tracked items.' }
+        $.ui.toast('Tickets: cleared the tracked items.')
+        break
       default:
-        return { text: USAGE }
+        $.ui.toast(USAGE, { timeoutMs: 12_000 })
     }
+
+    return {}
   })
 
   // Every tool call, in the main conversation and in subagents.
@@ -252,6 +259,7 @@ function shortTool(tool: string): string {
 async function open($: EngineInterface): Promise<boolean> {
   const opened = await $.ui.open({ id: PANE, title: TITLE })
   await update($, isOpen, () => true)
+  if (!opened.isPlaced) $.ui.toast(`Tickets: the pane could not be shown here (${opened.reason}).`)
   return opened.isPlaced
 }
 

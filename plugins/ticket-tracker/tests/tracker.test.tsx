@@ -152,3 +152,33 @@ test('a tracked call shows in the band and the pane, on every surface', async ($
     await pane.unmount()
   }
 })
+
+test('only /tickets summary puts text in the transcript', async ($, on) => {
+  mock.clock(on, { now: 1_000 })
+  on('tool.call', () => ({ result: { id: 1 }, text: '{"id":1}' }))
+  const toasts: string[] = []
+  on('ui.toast', (_, e) => {
+    toasts.push(e.text)
+    return { value: undefined }
+  })
+  on('ui.panes', () => ({ value: [] }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('ui.close', () => ({ value: undefined }))
+  on('session.messages', () => ({ value: [] }))
+  await $.tool.call({ tool: 'mcp__github__issue_write', tool_use_id: 'c', method: 'update', owner: 'a', repo: 'b', issue_number: 5, state: 'closed' })
+
+  const run = (args: string) =>
+    $.command.run({
+      command: 'tickets',
+      args,
+      origin: { kind: 'composer' },
+      presentation: { isFullscreen: true, columns: 120 },
+    })
+
+  expect((await run('summary')).text).toContain('a/b#5')
+  for (const args of ['', 'open', 'close', 'all', 'changes', 'rescan', 'clear', 'nonsense']) {
+    expect((await run(args)).text).toBeUndefined()
+  }
+  // The person still hears back, through toasts the model never reads.
+  expect(toasts.some(t => t.includes('/tickets summary'))).toBe(true)
+})

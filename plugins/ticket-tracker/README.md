@@ -42,6 +42,12 @@ claude plugin install ticket-tracker@agora
 | `/tickets rescan` | Rebuild the list from the conversation history |
 | `/tickets clear` | Forget everything tracked so far |
 
+Only `/tickets summary` writes to the transcript. The other commands reply with a short toast, if they reply at all, so Claude never reads them. Running `/tickets` with an unknown argument shows this list as a toast.
+
+## Token cost
+
+The plugin makes no model calls. It reads tool calls and the session history with plain string matching, and draws the band and pane locally, so tracking, the buttons and every command except `summary` add no tokens. `/tickets summary` adds its text to the conversation, about 20–40 tokens per item, because it's meant for Claude to read.
+
 ## What it recognizes
 
 The list is built from the tool calls in the conversation. When a session starts (including `--resume` and `--continue`) the plugin reads the history the session already has, and after that it records each tool call as it finishes, from the main conversation and from subagents alike.
